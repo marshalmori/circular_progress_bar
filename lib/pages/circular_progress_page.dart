@@ -8,7 +8,7 @@ class CircularProgressPage extends StatefulWidget {
 }
 
 class _CircularProgressPageState extends State<CircularProgressPage> {
-  double percentage = 5;
+  double percentage = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +32,30 @@ class _CircularProgressPageState extends State<CircularProgressPage> {
           height: 300,
           //color: Colors.red,
           child: CustomPaint(
+            child: Center(
+              child: TextPercentage(percentage: percentage),
+            ),
             painter: _RadialProgress(percentage),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class TextPercentage extends StatelessWidget {
+  TextPercentage({@required this.percentage});
+
+  final double percentage;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '$percentage %',
+      style: TextStyle(
+        fontSize: 40.0,
+        fontWeight: FontWeight.bold,
+        color: Colors.blueGrey.shade300,
       ),
     );
   }
