@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -7,8 +8,31 @@ class CircularProgressPage extends StatefulWidget {
   _CircularProgressPageState createState() => _CircularProgressPageState();
 }
 
-class _CircularProgressPageState extends State<CircularProgressPage> {
+class _CircularProgressPageState extends State<CircularProgressPage>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+
   double percentage = 0;
+  double newPercentage = 0.0;
+
+  @override
+  void initState() {
+    controller = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 800));
+
+    controller.addListener(() {
+      setState(() {
+        percentage = lerpDouble(percentage, newPercentage, controller.value);
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +42,13 @@ class _CircularProgressPageState extends State<CircularProgressPage> {
         backgroundColor: Colors.orange.shade800,
         onPressed: () {
           setState(() {
-            percentage += 5;
-            if (percentage > 100) {
+            percentage = newPercentage;
+            newPercentage += 10;
+            if (newPercentage > 100) {
+              newPercentage = 0;
               percentage = 0;
             }
+            controller.forward(from: 0.0);
           });
         },
       ),
@@ -51,7 +78,7 @@ class TextPercentage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      '$percentage %',
+      '${percentage.toStringAsFixed(1)}%',
       style: TextStyle(
         fontSize: 40.0,
         fontWeight: FontWeight.bold,
